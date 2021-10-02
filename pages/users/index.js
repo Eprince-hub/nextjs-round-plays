@@ -99,7 +99,22 @@ export async function getServerSideProps(context) {
   // individual user and inject the following
   // property into each of them. like bellow.
 
+  // ########################################
+
   const glorifiedUsers = users.map((user) => {
+    const isTheUserFollowed = following.some((userCookieObj) => {
+      return Number(user.id) === userCookieObj.id;
+    });
+
+    // We need to find the id from the following to
+    // make sure that we can only clap for someone
+    // that we are following:
+
+    const userObj = following.find((cookieObj) => {
+      return cookieObj.id === Number(user.id);
+    });
+
+    // ###################
     return {
       // This is the new object that we are returning
       // from the users object and then store it in
@@ -120,15 +135,26 @@ export async function getServerSideProps(context) {
       // iterate over the following array and check
       // if the numbers in the array is matching the
       // id of any of the users object we have.
+      // ...user,
+      // following: following.some((id) => {
+      // the id of the user in our data base is a
+      // string and we need to change it back
+      // to a number so that we can compare it to
+      // the id that we will get from our following
+      // array.
+      // return Number(user.id) === id;
+
+      // In other to transform the above data structure to get the new object data structure that we need for storing both the clap and the following which was just an array of numbers,, We would need to reorganize the above data structure to the one we have bellow: The id that we are getting from the following which was in form of true or false in our glorifiedUsers variable and as an array of numbers in our following cookies would need to be transformed into an array of object and the id we are getting from the user would remain the same as we need it for the comparison.:
+      // We moved the code that checked the condition
+      // up and assigned it into a variable called
+      // isTheUserFollowed!
+
       ...user,
-      following: following.some((id) => {
-        // the id of the user in our data base is a
-        // string and we need to change it back
-        // to a number so that we can compare it to
-        // the id that we will get from our following
-        // array.
-        return Number(user.id) === id;
-      }),
+      following: isTheUserFollowed,
+
+      // here we would need to check if the following is true which means we are following the person and then we can start clapping for the person. If the following is false then the clap should be zero.
+
+      clap: isTheUserFollowed ? userObj.clapCount : 0,
     };
   });
 
