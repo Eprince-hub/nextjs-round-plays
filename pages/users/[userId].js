@@ -22,15 +22,24 @@ export default function User(props) {
   );
   // #############################################
 
+  const userCookieObj = following.find((cookieObj) => {
+    return cookieObj.id === Number(props.singleUser.id);
+  });
+
+  const initialClapCount = userCookieObj ? userCookieObj.clapCount : 0;
+
   // we are creating the state variable to start
   // recording the clap and increase it anytime we click the clap for me button.
-  const [clapCount, setClapCount] = useState(0);
+  const [clapCount, setClapCount] = useState(initialClapCount);
 
   // We need to create a click handler that adds and
   // removes from the array of following and it will
   // update the users accordingly.
 
-  function clickHandler() {
+  // ##########################
+  // click handler starts here
+
+  function followClickHandler() {
     // the button need to check the current state
     // of the cookie,
     // it needs to update the cookie state,
@@ -43,9 +52,9 @@ export default function User(props) {
     // application crashing because it couldn't parse an undefine,, then it would parse an empty array
     // and then create the cookies once the user clicks the button.
 
-    const currentCookie = getParsedCookie('following') || []; // we get the current state of the cookie as the brwoser loads.
-    const isUserFollowed = currentCookie.some((id) => {
-      return id === Number(props.singleUser.id);
+    const currentCookie = getParsedCookie('following') || []; // we get the current state of the cookie as the browser loads.
+    const isUserFollowed = currentCookie.some((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
     });
 
     // when we find the matching user with the number
@@ -57,17 +66,44 @@ export default function User(props) {
     if (isUserFollowed) {
       // if the user is being followed, then remove
 
-      newCookie = currentCookie.filter((id) => {
-        return id !== Number(props.singleUser.id);
+      newCookie = currentCookie.filter((cookieObj) => {
+        return cookieObj.id !== Number(props.singleUser.id);
       });
+      // If the user is unfollowed then reset the clapCount back to Zero
+      setClapCount(0);
     } else {
       // if the user is not being followed then follow
 
-      newCookie = [...currentCookie, Number(props.singleUser.id)];
+      newCookie = [
+        ...currentCookie,
+        { id: Number(props.singleUser.id), clapCount: 0 },
+      ];
     }
 
     setParsedCookie('following', newCookie);
     setFollowing(newCookie);
+  }
+
+  // Follow click handler ends here
+
+  // ###############################
+
+  function clapClickHandler() {
+    // add one to the clap property
+    // 1. Get the old version of the array
+
+    const currentCookie = getParsedCookie('following') || [];
+    // 2. get the object in the array
+
+    const cookieObjFound = currentCookie.find((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
+    });
+
+    cookieObjFound.clapCount += 1;
+    // 3. get the new version of the array
+
+    setParsedCookie('following', currentCookie);
+    setClapCount(cookieObjFound.clapCount);
   }
 
   return (
@@ -79,8 +115,10 @@ export default function User(props) {
       <div>his/her favorite color is {props.singleUser.favoriteColor}</div>
 
       {/* Inside the button we need to check if the id of our single user is equal to any number that is inside the following array and then use some to match them and return that user when the button is clicked.. So it means that when the button is clicked then we will follow the user if we are not following the user already.. but if we are following them already then we will unfollow them when we click the button. */}
-      <button onClick={clickHandler}>
-        {following.some((id) => Number(props.singleUser.id) === id)
+      <button onClick={followClickHandler}>
+        {following.some(
+          (cookieObj) => Number(props.singleUser.id) === cookieObj.id,
+        )
           ? 'unfollow'
           : 'follow'}
       </button>
@@ -91,15 +129,15 @@ export default function User(props) {
         <h1>Clapping starts here</h1>
       </div>
 
-      <h3>Clap: {clapCount}</h3>
-      <button
-        onClick={() => {
-          console.log('Bravo');
-          setClapCount(clapCount + 1);
-        }}
-      >
-        Clap for me!
-      </button>
+      {following.some(
+        (cookieObj) => Number(props.singleUser.id) === cookieObj.id,
+      ) ? (
+        <>
+          <h3>Clap: {clapCount}</h3>
+
+          <button onClick={clapClickHandler}>Clap for me!</button>
+        </>
+      ) : null}
     </Layout>
   );
 
