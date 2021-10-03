@@ -24,6 +24,9 @@ export default function Header() {
         <Link href="/users">
           <a>Users</a>
         </Link>
+        <Link href="/users/cart">
+          <a>Shopping Cart</a>
+        </Link>
       </nav>
     </header>
   );

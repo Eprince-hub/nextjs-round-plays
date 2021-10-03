@@ -17,7 +17,7 @@ export default function Users(props) {
               <Link href={`/users/${user.id}`}>
                 <a>{user.name} single page</a>
               </Link>
-              <div>{user.following ? '❤️' : '🖤'}</div>
+              <div>{user.cartInside ? '❤️' : '🖤'}</div>
             </li>
           );
         })}
@@ -30,39 +30,39 @@ export default function Users(props) {
 export async function getServerSideProps(context) {
   const { users } = await import('../../util/database');
 
-  const cookies = context.req.cookies.following || '[]';
-  const following = JSON.parse(cookies);
+  const cookies = context.req.cookies.cartInside || '[]';
+  const cartInside = JSON.parse(cookies);
 
-  console.log(following);
+  console.log(cartInside);
   // [5,7]
   console.log(users);
 
-  const glorifiedUsers = users.map((user) => {
+  const itemInsideCart = users.map((user) => {
     return {
       ...user,
-      following: following.some((id) => {
+      cartInside: cartInside.some((id) => {
         return Number(user.id) === id;
       }),
     };
   });
 
-  console.log(glorifiedUsers);
+  console.log(itemInsideCart);
 
   return {
     props: {
-      users: glorifiedUsers,
+      users: itemInsideCart,
     },
   };
 }
  */
 
-// FOLLOWING Jose's Video
+// CARTINSIDE Jose's Video
 // #############################
 
-// The following property is not with the users from
+// The cartInside property is not with the users from
 // the Data base but we need to get the user that
 // is being given to us by the function bellow and
-// add to it the following property with any value
+// add to it the cartInside property with any value
 // that it has.
 
 export async function getServerSideProps(context) {
@@ -72,45 +72,45 @@ export async function getServerSideProps(context) {
   // in our browsers from this webpage
   // and we are accesing the cookies from the backend
 
-  console.log(context.req.cookies); // as a Number 5,7
-  console.log(context.req.headers.cookie); // as a string "5" "7"
+  // console.log(context.req.cookies); // as a Number 5,7
+  // console.log(context.req.headers.cookie); // as a string "5" "7"
 
   // and then we can access the particular cookies
   // values that we want by accessing the name
   // with a dot notation like bellow:
-  // console.log(context.req.cookies.following);
+  // console.log(context.req.cookies.cartInside);
   // console.log(context.req.cookies.Cart);
 
   // when cookie is undefined the the JSON.parse will through an error
   // in other to catch that error and don't let it crash our application.. we need to assign the cookie variable to either the correct value or an empty array.
 
-  const cookies = context.req.cookies.following || '[]';
-  const following = JSON.parse(cookies);
-  console.log(following);
+  const cookies = context.req.cookies.cartInside || '[]';
+  const cartInside = JSON.parse(cookies);
+  // console.log(cartInside);
 
   // the users object that comes from the database
-  // has no property called following so we need
+  // has no property called cartInside so we need
   // to somehow transform that object as we get it
   // from the server into another object that will
-  // then have the following property.
+  // then have the cartInside property.
   // we can transform an array of object into another
   // array of object using an array method called map
   // so we will map over the users and get each
-  // individual user and inject the following
+  // individual user and inject the cartInside
   // property into each of them. like bellow.
 
   // ########################################
 
-  const glorifiedUsers = users.map((user) => {
-    const isTheUserFollowed = following.some((userCookieObj) => {
+  const itemInsideCart = users.map((user) => {
+    const isTheItemInCart = cartInside.some((userCookieObj) => {
       return Number(user.id) === userCookieObj.id;
     });
 
-    // We need to find the id from the following to
-    // make sure that we can only clap for someone
-    // that we are following:
+    // We need to find the id from the cartInside to
+    // make sure that we can only quantity for someone
+    // that we are cartInside:
 
-    const userObj = following.find((cookieObj) => {
+    const userObj = cartInside.find((cookieObj) => {
       return cookieObj.id === Number(user.id);
     });
 
@@ -118,53 +118,53 @@ export async function getServerSideProps(context) {
     return {
       // This is the new object that we are returning
       // from the users object and then store it in
-      // a variable called glorifiedUsers.
+      // a variable called itemInsideCart.
       // we use the spread operator to return all
       // the already included property of the users
       // and then add the new one we want to add
       // example bellow.
 
       // after getting the users and inserting the
-      // following property or any property that we want,
+      // cartInside property or any property that we want,
       // Then we need to match the user id to
       // only the values that are present in the
-      // following array which means that we are
-      // following the user with this ID
+      // cartInside array which means that we are
+      // cartInside the user with this ID
       // to do this we will need to use an array
       // method called some and we will use it to
-      // iterate over the following array and check
+      // iterate over the cartInside array and check
       // if the numbers in the array is matching the
       // id of any of the users object we have.
       // ...user,
-      // following: following.some((id) => {
+      // cartInside: cartInside.some((id) => {
       // the id of the user in our data base is a
       // string and we need to change it back
       // to a number so that we can compare it to
-      // the id that we will get from our following
+      // the id that we will get from our cartInside
       // array.
       // return Number(user.id) === id;
 
-      // In other to transform the above data structure to get the new object data structure that we need for storing both the clap and the following which was just an array of numbers,, We would need to reorganize the above data structure to the one we have bellow: The id that we are getting from the following which was in form of true or false in our glorifiedUsers variable and as an array of numbers in our following cookies would need to be transformed into an array of object and the id we are getting from the user would remain the same as we need it for the comparison.:
+      // In other to transform the above data structure to get the new object data structure that we need for storing both the quantity and the cartInside which was just an array of numbers,, We would need to reorganize the above data structure to the one we have bellow: The id that we are getting from the cartInside which was in form of true or false in our itemInsideCart variable and as an array of numbers in our cartInside cookies would need to be transformed into an array of object and the id we are getting from the user would remain the same as we need it for the comparison.:
       // We moved the code that checked the condition
       // up and assigned it into a variable called
-      // isTheUserFollowed!
+      // isTheItemInCart!
 
       ...user,
-      following: isTheUserFollowed,
+      cartInside: isTheItemInCart,
 
-      // here we would need to check if the following is true which means we are following the person and then we can start clapping for the person. If the following is false then the clap should be zero.
+      // here we would need to check if the cartInside is true which means we are cartInside the person and then we can start quantityping for the person. If the cartInside is false then the quantity should be zero.
 
-      clap: isTheUserFollowed ? userObj.clapCount : 0,
+      quantity: isTheItemInCart ? userObj.quantityCount : 0,
     };
   });
 
-  console.log(glorifiedUsers);
+  // console.log(itemInsideCart);
 
   // console.log(users);
 
   return {
     props: {
-      users: glorifiedUsers,
+      users: itemInsideCart,
     },
   };
 }

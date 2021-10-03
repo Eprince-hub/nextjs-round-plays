@@ -1,4 +1,4 @@
-import Cookies from 'js-cookie';
+// import Cookies from 'js-cookie';
 import Head from 'next/head';
 import { useState } from 'react';
 // import { useRouter } from 'next/router';
@@ -14,32 +14,33 @@ import { getParsedCookie, setParsedCookie } from '../../util/cookies';
 // we need to import the library and use its functions
 // to get and set the cookies.
 
-console.log(Cookies.get('following'));
+// console.log(Cookies.get('cartInside'));
 
 export default function User(props) {
-  const [following, setFollowing] = useState(
-    getParsedCookie('following') || [],
+  // this could be the items that are already in the cart!.. need to check later to be sure
+  const [cartInside, setCartInside] = useState(
+    getParsedCookie('cartInside') || [],
   );
   // #############################################
 
-  const userCookieObj = following.find((cookieObj) => {
+  const itemCookieObj = cartInside.find((cookieObj) => {
     return cookieObj.id === Number(props.singleUser.id);
   });
 
-  const initialClapCount = userCookieObj ? userCookieObj.clapCount : 0;
+  const initialQuantityCount = itemCookieObj ? itemCookieObj.quantityCount : 0;
 
   // we are creating the state variable to start
-  // recording the clap and increase it anytime we click the clap for me button.
-  const [clapCount, setClapCount] = useState(initialClapCount);
+  // recording the quantity and increase it anytime we click the quantity for me button.
+  const [quantityCount, setQuantityCount] = useState(initialQuantityCount);
 
   // We need to create a click handler that adds and
-  // removes from the array of following and it will
+  // removes from the array of cartInside and it will
   // update the users accordingly.
 
   // ##########################
   // click handler starts here
 
-  function followClickHandler() {
+  function addToCartClickHandler() {
     // the button need to check the current state
     // of the cookie,
     // it needs to update the cookie state,
@@ -52,58 +53,58 @@ export default function User(props) {
     // application crashing because it couldn't parse an undefine,, then it would parse an empty array
     // and then create the cookies once the user clicks the button.
 
-    const currentCookie = getParsedCookie('following') || []; // we get the current state of the cookie as the browser loads.
-    const isUserFollowed = currentCookie.some((cookieObj) => {
+    const currentCookie = getParsedCookie('cartInside') || []; // we get the current state of the cookie as the browser loads.
+    const isItemInCart = currentCookie.some((cookieObj) => {
       return cookieObj.id === Number(props.singleUser.id);
     });
 
     // when we find the matching user with the number
-    // in the following array,, We need to either delete or add it according to if the cookie already exists or not. and we use filter to find
+    // in the cartInside array,, We need to either delete or add it according to if the cookie already exists or not. and we use filter to find
     // them and work on them
 
     let newCookie;
 
-    if (isUserFollowed) {
+    if (isItemInCart) {
       // if the user is being followed, then remove
 
       newCookie = currentCookie.filter((cookieObj) => {
         return cookieObj.id !== Number(props.singleUser.id);
       });
-      // If the user is unfollowed then reset the clapCount back to Zero
-      setClapCount(0);
+      // If the user is unfollowed then reset the quantityCount back to Zero
+      setQuantityCount(0);
     } else {
       // if the user is not being followed then follow
 
       newCookie = [
         ...currentCookie,
-        { id: Number(props.singleUser.id), clapCount: 0 },
+        { id: Number(props.singleUser.id), quantityCount: 0 },
       ];
     }
 
-    setParsedCookie('following', newCookie);
-    setFollowing(newCookie);
+    setParsedCookie('cartInside', newCookie);
+    setCartInside(newCookie);
   }
 
   // Follow click handler ends here
 
   // ###############################
 
-  function clapClickHandler() {
-    // add one to the clap property
+  function quantityClickHandler() {
+    // add one to the quantity property
     // 1. Get the old version of the array
 
-    const currentCookie = getParsedCookie('following') || [];
+    const currentCookie = getParsedCookie('cartInside') || [];
     // 2. get the object in the array
 
     const cookieObjFound = currentCookie.find((cookieObj) => {
       return cookieObj.id === Number(props.singleUser.id);
     });
 
-    cookieObjFound.clapCount += 1;
+    cookieObjFound.quantityCount += 1;
     // 3. get the new version of the array
 
-    setParsedCookie('following', currentCookie);
-    setClapCount(cookieObjFound.clapCount);
+    setParsedCookie('cartInside', currentCookie);
+    setQuantityCount(cookieObjFound.quantityCount);
   }
 
   return (
@@ -114,28 +115,28 @@ export default function User(props) {
       <div>Personal user page of {props.singleUser.name}</div>
       <div>his/her favorite color is {props.singleUser.favoriteColor}</div>
 
-      {/* Inside the button we need to check if the id of our single user is equal to any number that is inside the following array and then use some to match them and return that user when the button is clicked.. So it means that when the button is clicked then we will follow the user if we are not following the user already.. but if we are following them already then we will unfollow them when we click the button. */}
-      <button onClick={followClickHandler}>
-        {following.some(
+      {/* Inside the button we need to check if the id of our single user is equal to any number that is inside the cartInside array and then use some to match them and return that user when the button is clicked.. So it means that when the button is clicked then we will follow the user if we are not cartInside the user already.. but if we are cartInside them already then we will unfollow them when we click the button. */}
+      <button onClick={addToCartClickHandler}>
+        {cartInside.some(
           (cookieObj) => Number(props.singleUser.id) === cookieObj.id,
         )
-          ? 'unfollow'
-          : 'follow'}
+          ? 'Remove From Cart'
+          : 'Add To Cart'}
       </button>
 
-      {/* From here we are trying to create a clap for each user to try and record each time we have clapped for the user,, It means that we will be transforming our cookies data structure from an array of numbers to an array of objects that can record more than one properties for each user */}
+      {/* From here we are trying to create a quantity for each user to try and record each time we have quantityped for the user,, It means that we will be transforming our cookies data structure from an array of numbers to an array of objects that can record more than one properties for each user */}
 
       <div>
-        <h1>Clapping starts here</h1>
+        <h1>The Item Quantity Starts Here</h1>
       </div>
 
-      {following.some(
+      {cartInside.some(
         (cookieObj) => Number(props.singleUser.id) === cookieObj.id,
       ) ? (
         <>
-          <h3>Clap: {clapCount}</h3>
+          <h3>Quantity: {quantityCount}</h3>
 
-          <button onClick={clapClickHandler}>Clap for me!</button>
+          <button onClick={quantityClickHandler}>Add Quantity</button>
         </>
       ) : null}
     </Layout>
@@ -153,21 +154,21 @@ export default function User(props) {
 
 
 
-  const [following, setFollowing] = useState(
-    getParsedCookie('following') || [],
+  const [cartInside, setCartInside] = useState(
+    getParsedCookie('cartInside') || [],
   );
 
   function clickHandler() {
     // 1. check the current state of the cookie
-    const currentCookie = getParsedCookie('following') || [];
+    const currentCookie = getParsedCookie('cartInside') || [];
     // [5,7]
 
-    const isUserFollowed = currentCookie.some((id) => {
+    const isItemInCart = currentCookie.some((id) => {
       return id === Number(props.singleUser.id); // id that comes from the URL
     });
 
     let newCookie;
-    if (isUserFollowed) {
+    if (isItemInCart) {
       // remove the user
       newCookie = currentCookie.filter(
         (id) => id !== Number(props.singleUser.id),
@@ -179,8 +180,8 @@ export default function User(props) {
 
     console.log(newCookie);
 
-    setParsedCookie('following', newCookie);
-    setFollowing(newCookie);
+    setParsedCookie('cartInside', newCookie);
+    setCartInside(newCookie);
   }
 
 
@@ -194,7 +195,7 @@ export default function User(props) {
       <div>Personal user page of {props.singleUser.name}</div>
       <div>his/her favourite color is {props.singleUser.favoriteColor}</div>
       <button onClick={clickHandler}>
-        {following.some((id) => Number(props.singleUser.id) === id)
+        {cartInside.some((id) => Number(props.singleUser.id) === id)
           ? 'unfollow'
           : 'follow'}
       </button>
@@ -228,7 +229,7 @@ export default function User(props) {
  */
 
 // ###################################
-// following Jose's Video Tutorial
+// cartInside Jose's Video Tutorial
 
 export async function getServerSideProps(context) {
   const { users } = await import('../../util/database');
@@ -241,7 +242,7 @@ export async function getServerSideProps(context) {
 
   //  { id: '6', name: 'Andrea', favoriteColor: 'purple' },
 
-  console.log(singleUser);
+  // console.log(singleUser);
   return {
     props: {
       singleUser,
