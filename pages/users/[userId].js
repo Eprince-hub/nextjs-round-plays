@@ -24,10 +24,10 @@ export default function User(props) {
   // #############################################
 
   const itemCookieObj = cartInside.find((cookieObj) => {
-    return cookieObj.id === Number(props.singleUser.id);
+    return cookieObj.id === Number(props.singleUser.id); // this finds the cookie object that has the same id as the single user obj
   });
 
-  const initialQuantityCount = itemCookieObj ? itemCookieObj.quantityCount : 0;
+  const initialQuantityCount = itemCookieObj ? itemCookieObj.quantityCount : 1;
 
   // we are creating the state variable to start
   // recording the quantity and increase it anytime we click the quantity for me button.
@@ -39,6 +39,99 @@ export default function User(props) {
 
   // ##########################
   // click handler starts here
+
+  // I am commenting this out to try to modify it to work like i want
+
+  /* function addToCartClickHandler() {
+    // the button need to check the current state
+    // of the cookie,
+    // it needs to update the cookie state,
+    // by adding if it is not there and remove if its
+    // there
+    // and then update the state of the application
+    // we are using the empty arrays to catch the error
+    // that would crash our application in case someone
+    // have deleted the cookies. So instead of our
+    // application crashing because it couldn't parse an undefine,, then it would parse an empty array
+    // and then create the cookies once the user clicks the button.
+
+    const currentCookie = getParsedCookie('cartInside') || []; // we get the current state of the cookie as the browser loads.
+    const isItemInCart = currentCookie.some((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
+    });
+
+    // when we find the matching user with the number
+    // in the cartInside array,, We need to either delete or add it according to if the cookie already exists or not. and we use filter to find
+    // them and work on them
+
+    let newCookie;
+
+    if (isItemInCart) {
+      // if the user is being followed, then remove
+
+      newCookie = currentCookie.filter((cookieObj) => {
+        return cookieObj.id !== Number(props.singleUser.id);
+      });
+      // If the user is unfollowed then reset the quantityCount back to Zero
+      setQuantityCount(0);
+    } else {
+      // if the user is not being followed then follow
+
+      newCookie = [
+        ...currentCookie,
+        { id: Number(props.singleUser.id), quantityCount: 1 },
+      ];
+    }
+
+    setParsedCookie('cartInside', newCookie);
+    setCartInside(newCookie);
+  }
+
+  // Follow click handler ends here
+
+  // ###############################
+
+  function quantityClickHandler() {
+    // add one to the quantity property
+    // 1. Get the old version of the array
+
+    const currentCookie = getParsedCookie('cartInside') || [];
+    // 2. get the object in the array
+
+    const cookieObjFound = currentCookie.find((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
+    });
+
+    cookieObjFound.quantityCount += 1;
+    // 3. get the new version of the array
+
+    setParsedCookie('cartInside', currentCookie);
+    setQuantityCount(cookieObjFound.quantityCount);
+  }
+
+  function reduceQuantityClickHandler() {
+    // add one to the quantity property
+    // 1. Get the old version of the array
+
+    const currentCookie = getParsedCookie('cartInside') || [];
+    // 2. get the object in the array
+
+    const cookieObjFound = currentCookie.find((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
+    });
+
+    cookieObjFound.quantityCount -= 1;
+    // 3. get the new version of the array
+
+    setParsedCookie('cartInside', currentCookie);
+    setQuantityCount(cookieObjFound.quantityCount);
+  }
+
+  function handleQuantityError() {
+    console.log("can't go bellow 0 ");
+  } */
+
+  // Demo trying to make the above function work for me in a way that i want.
 
   function addToCartClickHandler() {
     // the button need to check the current state
@@ -77,7 +170,7 @@ export default function User(props) {
 
       newCookie = [
         ...currentCookie,
-        { id: Number(props.singleUser.id), quantityCount: 0 },
+        { id: Number(props.singleUser.id), quantityCount: 1 },
       ];
     }
 
@@ -107,6 +200,28 @@ export default function User(props) {
     setQuantityCount(cookieObjFound.quantityCount);
   }
 
+  function reduceQuantityClickHandler() {
+    // add one to the quantity property
+    // 1. Get the old version of the array
+
+    const currentCookie = getParsedCookie('cartInside') || [];
+    // 2. get the object in the array
+
+    const cookieObjFound = currentCookie.find((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
+    });
+
+    cookieObjFound.quantityCount -= 1;
+    // 3. get the new version of the array
+
+    setParsedCookie('cartInside', currentCookie);
+    setQuantityCount(cookieObjFound.quantityCount);
+  }
+
+  function handleQuantityError() {
+    console.log("can't go bellow 0 ");
+  }
+
   return (
     <Layout>
       <Head>
@@ -130,7 +245,9 @@ export default function User(props) {
         <h1>The Item Quantity Starts Here</h1>
       </div>
 
-      {cartInside.some(
+      {/* The bellow button was always hidden when there are no item in the cart but i don't want them hidden,, so I make the second button down this very one.  */}
+
+      {/* {cartInside.some(
         (cookieObj) => Number(props.singleUser.id) === cookieObj.id,
       ) ? (
         <>
@@ -138,7 +255,20 @@ export default function User(props) {
 
           <button onClick={quantityClickHandler}>Add Quantity</button>
         </>
-      ) : null}
+      ) : null} */}
+
+      <h3>Quantity: {quantityCount}</h3>
+
+      <button onClick={quantityClickHandler}>Add Quantity</button>
+
+      {/* Clicking to remove quantity */}
+      <button
+        onClick={
+          quantityCount > 1 ? reduceQuantityClickHandler : handleQuantityError
+        }
+      >
+        Remove Quantity
+      </button>
     </Layout>
   );
 
