@@ -133,27 +133,34 @@ export default function User(props) {
 
   // Demo trying to make the above function work for me in a way that i want.
 
-  function addToCartClickHandler() {
-    // the button need to check the current state
-    // of the cookie,
-    // it needs to update the cookie state,
-    // by adding if it is not there and remove if its
-    // there
-    // and then update the state of the application
-    // we are using the empty arrays to catch the error
-    // that would crash our application in case someone
-    // have deleted the cookies. So instead of our
-    // application crashing because it couldn't parse an undefine,, then it would parse an empty array
-    // and then create the cookies once the user clicks the button.
+  // ###############################
 
+  function quantityClickHandler() {
+    // add one to the quantity property
+    // 1. Get the old version of the array
+
+    const currentCookie = getParsedCookie('cartInside') || [];
+    // 2. get the object in the array
+
+    const cookieObjFound = currentCookie.find((cookieObj) => {
+      return cookieObj.id === Number(props.singleUser.id);
+    });
+
+    cookieObjFound.quantityCount += 1;
+    // 3. get the new version of the array
+
+    setParsedCookie('cartInside', currentCookie);
+    setQuantityCount(cookieObjFound.quantityCount);
+  }
+
+  // ###############################################################
+  // function that handles the add to cart
+
+  function addToCartClickHandler() {
     const currentCookie = getParsedCookie('cartInside') || []; // we get the current state of the cookie as the browser loads.
     const isItemInCart = currentCookie.some((cookieObj) => {
       return cookieObj.id === Number(props.singleUser.id);
     });
-
-    // when we find the matching user with the number
-    // in the cartInside array,, We need to either delete or add it according to if the cookie already exists or not. and we use filter to find
-    // them and work on them
 
     let newCookie;
 
@@ -178,28 +185,7 @@ export default function User(props) {
     setCartInside(newCookie);
   }
 
-  // Follow click handler ends here
-
-  // ###############################
-
-  function quantityClickHandler() {
-    // add one to the quantity property
-    // 1. Get the old version of the array
-
-    const currentCookie = getParsedCookie('cartInside') || [];
-    // 2. get the object in the array
-
-    const cookieObjFound = currentCookie.find((cookieObj) => {
-      return cookieObj.id === Number(props.singleUser.id);
-    });
-
-    cookieObjFound.quantityCount += 1;
-    // 3. get the new version of the array
-
-    setParsedCookie('cartInside', currentCookie);
-    setQuantityCount(cookieObjFound.quantityCount);
-  }
-
+  // Function that reduces the quantity number of the items
   function reduceQuantityClickHandler() {
     // add one to the quantity property
     // 1. Get the old version of the array
@@ -218,9 +204,15 @@ export default function User(props) {
     setQuantityCount(cookieObjFound.quantityCount);
   }
 
+  // handle the invalid input decrease error
   function handleQuantityError() {
     console.log("can't go bellow 0 ");
   }
+
+  // ################################
+  // ################################
+  // ################################
+  // ################################
 
   return (
     <Layout>
