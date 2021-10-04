@@ -1,3 +1,4 @@
+import { css } from '@emotion/react';
 // import Cookies from 'js-cookie';
 import Head from 'next/head';
 import Link from 'next/link';
@@ -5,6 +6,16 @@ import Link from 'next/link';
 // import { useRouter } from 'next/router';
 import Layout from '../../../components/Layout';
 import { getParsedCookie } from '../../../util/cookies';
+
+const cartStyling = css`
+  width: 100vw;
+  min-height: 50vh;
+  background: red;
+
+  ul li img {
+    height: 300px;
+  }
+`;
 
 // import { getParsedCookie, setParsedCookie } from '../../util/cookies';
 
@@ -72,48 +83,50 @@ export default function Cart({ users }) {
       <Head>
         <title>Shopping Cart</title>
       </Head>
-      <h1>This is shopping cart page</h1>
+      <div css={cartStyling}>
+        <h1>This is shopping cart page</h1>
 
-      <h1>
-        {foundUserWithCookies.length !== 0
-          ? `You have ${foundUserWithCookies.length} item in your Cart`
-          : `Your Cart is Empty`}
-      </h1>
-
-      <div>
-        {foundUserWithCookies.length === 0 ? (
-          <div>
-            <Link href="/users">
-              <a>View Products</a>
-            </Link>
-          </div>
-        ) : (
-          ''
-        )}
-      </div>
-
-      <ul>
-        {foundUserWithCookies.map((userWithCookie) => {
-          return (
-            <li key={`user-li- ${userWithCookie.id}`}>
-              <h1>{userWithCookie.name}</h1>
-              <img src={userWithCookie.img} alt={userWithCookie.name} />
-              <h4>{`${userWithCookie.price.amount} ${userWithCookie.price.currency}`}</h4>
-              <p>{userWithCookie.favoriteColor}</p>
-              <p style={{ backgroundColor: userWithCookie.colorChoice.red }}>
-                {userWithCookie.colorChoice.black}
-              </p>
-            </li>
-          );
-        })}
-      </ul>
-
-      <div>
         <h1>
-          {foundUserWithCookies.map((itemPrices) => {
-            // Do something here to add the price of the cart items
-          })}
+          {foundUserWithCookies.length !== 0
+            ? `You have ${foundUserWithCookies.length} item in your Cart`
+            : `Your Cart is Empty`}
         </h1>
+
+        <div>
+          {foundUserWithCookies.length === 0 ? (
+            <div>
+              <Link href="/users">
+                <a>View Products</a>
+              </Link>
+            </div>
+          ) : (
+            ''
+          )}
+        </div>
+
+        <ul>
+          {foundUserWithCookies.map((userWithCookie) => {
+            return (
+              <li key={`user-li- ${userWithCookie.id}`}>
+                <h1>{userWithCookie.name}</h1>
+                <img src={userWithCookie.img} alt={userWithCookie.name} />
+                <h4>{`${userWithCookie.price.amount} ${userWithCookie.price.currency}`}</h4>
+                <p>{userWithCookie.favoriteColor}</p>
+                <p style={{ backgroundColor: userWithCookie.colorChoice.red }}>
+                  {userWithCookie.colorChoice.black}
+                </p>
+              </li>
+            );
+          })}
+        </ul>
+
+        <div>
+          <h1>
+            {foundUserWithCookies.map((itemPrices) => {
+              // Do something here to add the price of the cart items
+            })}
+          </h1>
+        </div>
       </div>
     </Layout>
   );
