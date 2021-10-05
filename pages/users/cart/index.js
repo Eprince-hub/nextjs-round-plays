@@ -34,7 +34,11 @@ const cartStyling = css`
 
 // console.log(Cookies.get('cartInside'));
 
-export default function Cart({ users }) {
+export default function Cart(props) {
+  /* export default function Cart({ users }) */ // i created this function like this before, Its same like i did it now
+
+  const users = props.users;
+
   // getting the cookies from the browser!
 
   const shoppingCartCookie = getParsedCookie('cartInside') || [];
@@ -128,6 +132,13 @@ export default function Cart({ users }) {
           </h1>
         </div>
       </div>
+      <button
+        onClick={() => {
+          console.log('clicked');
+        }}
+      >
+        REMOVE FROM CART
+      </button>
     </Layout>
   );
 }
