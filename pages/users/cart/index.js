@@ -53,7 +53,7 @@ export default function Cart(props) {
     return itemAndCookieMatch;
   }); */
 
-  // This code snipet will find all the users or a user that matches the id of
+  // This code snippet will find all the users or a user that matches the id of
   // the cookies that i have in my cookie cart in the browser.. This would be like
   // the product and adding them to cart. I will need to map over the foundUserWithCookies
   // variable so that i can display all its values in the cart.

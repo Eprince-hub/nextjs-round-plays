@@ -19,6 +19,11 @@ export default function User(props) {
 
   const [quantityCount, setQuantityCount] = useState(initialQuantityCount);
 
+  // ##############################################
+  // ##############################################
+  // ##############################################
+  // ##############################################
+  // Implement this later when you are done with other handlers
   function quantityClickHandler() {
     const currentCookie = getParsedCookie('cartInside') || [];
 
@@ -32,6 +37,8 @@ export default function User(props) {
     setQuantityCount(cookieObjFound.quantityCount);
   }
 
+  //#########################################
+  // This addToCart handler is the one that i am planning not to use
   function addToCartClickHandler() {
     const currentCookie = getParsedCookie('cartInside') || []; // we get the current state of the cookie as the browser loads.
     const isItemInCart = currentCookie.some((cookieObj) => {
@@ -61,6 +68,11 @@ export default function User(props) {
     setCartInside(newCookie);
   }
 
+  // ###############################################
+  // ###############################################
+  // ###############################################
+  // Implement this later when you are done with other handlers if the need be
+
   // Function that reduces the quantity number of the items
   function reduceQuantityClickHandler() {
     const currentCookie = getParsedCookie('cartInside') || [];
@@ -87,6 +99,7 @@ export default function User(props) {
 
   // #####################################################
   // This add to cart button is working how i want it now.
+  // I am implementing this one right now as my add to cart handler
   function addToCartHandler() {
     const currentCookie = getParsedCookie('cartInside') || []; // we get the current state of the cookie as the browser loads.
     const isItemInCart = currentCookie.some((cookieObj) => {
@@ -115,7 +128,7 @@ export default function User(props) {
       setQuantityCount(cookieObjFound.quantityCount);
     }
   }
-
+  // ABOVE FUNCTION HAS BEEN IMPLEMENTED
   // The Add To Cart button above is working like i want it!
 
   // ############################################################
@@ -125,6 +138,7 @@ export default function User(props) {
   // Implement remove from Cart
 
   // This function is working how i want it to work right now
+  // I WOULD LIKE TO IMPLEMENT THIS AFTER I AM DONE WITH THE CART
   function removeItemFromCartClickHandler() {
     const currentCookie = getParsedCookie('cartInside') || []; // we get the current state of the cookie as the browser loads.
     const isItemInCart = currentCookie.some((cookieObj) => {
