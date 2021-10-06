@@ -23,7 +23,7 @@ export default function User(props) {
   // ##############################################
   // ##############################################
   // ##############################################
-  // Implement this later when you are done with other handlers
+  // Implemented
   function quantityClickHandler() {
     const currentCookie = getParsedCookie('cartInside') || [];
 
@@ -36,6 +36,8 @@ export default function User(props) {
     setParsedCookie('cartInside', currentCookie);
     setQuantityCount(cookieObjFound.quantityCount);
   }
+
+  // trying to make the function reusable
 
   //#########################################
   // This addToCart handler is the one that i am planning not to use
@@ -195,7 +197,7 @@ export default function User(props) {
 
       <h3>Quantity: {quantityCount}</h3>
 
-      <button onClick={quantityClickHandler}>Add Quantity</button>
+      <button onClick={quantityClickHandler}>Add Quantity Access</button>
 
       {/* Clicking to remove quantity */}
       <button
@@ -203,13 +205,15 @@ export default function User(props) {
           quantityCount > 1 ? reduceQuantityClickHandler : handleQuantityError
         }
       >
-        Remove Quantity
+        Remove Quantity Access
       </button>
 
       {/* From cart tutorial */}
       {/* New add to cart */}
-      <button onClick={addToCartHandler}>ADD TO CART</button>
-      <button onClick={removeItemFromCartClickHandler}>REMOVE FROM CART</button>
+      <button onClick={addToCartHandler}>ADD TO CART Access</button>
+      <button onClick={removeItemFromCartClickHandler}>
+        REMOVE FROM CART Access
+      </button>
     </Layout>
   );
 }
